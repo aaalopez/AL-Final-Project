@@ -403,7 +403,7 @@ this note in your response.</pre>
   <li><strong>A true input/output/cached rate split</strong> if Portkey or course staff can provide one, to replace the single blended rate now in <code>data/pricing.py</code> with per-token-type precision.</li>
   <li><strong>A per-session or per-day call cap</strong>, closing the rate-limiting gap ahead of any public hosting.</li>
   <li><strong>Optional lightweight accounts</strong> so a real (not fictional) profile and chat history could persist across visits, for users who want that — kept strictly opt-in given how deliberately the current version avoids collecting anything sensitive.</li>
-  <li><strong>A real sign-up flow</strong>, replacing today's single shared, fictional demo profile with actual user accounts — the natural next step once there's a real account and real data worth signing in to protect.</li>
+  <li><strong>A real sign-up flow</strong>, replacing today's single shared, fictional demo profile with actual user accounts — the natural next step once there's a real account and real data worth signing in to protect. Passwords would be properly hashed and salted (e.g., bcrypt or argon2) and never stored or transmitted in plain text, consistent with harness.md's existing "never ask for or store sensitive identifiers" principle.</li>
 </ul>
 
 <p style="margin-top:60px; color:var(--muted); font-size:0.85rem;">Prepared for MGT 409, Yale School of Management. All dollar and token figures in Sections 3–6 are either directly measured from <code>logs/usage_log.csv</code> or taken from live tests run while preparing this report, as noted inline.</p>
