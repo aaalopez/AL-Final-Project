@@ -375,7 +375,14 @@ this note in your response.</pre>
 <!-- ============ IMPACT ============ -->
 <h2 id="impact">6. Impact</h2>
 
-<p>FINtellect has not yet run with real outside users — that is the single biggest evidence gap in this report, and it is called out here directly rather than papered over with an invented testimonial. What follows is what can honestly be measured right now: the app's own test data, and publicly reported context for the problem it targets.</p>
+<p>FINtellect has not yet run a structured pilot — that is still the biggest evidence gap in this report, and it is called out here directly rather than papered over. What follows is what can honestly be shown right now: one real reaction from someone the app is built for, the app's own test data, and publicly reported context for the problem it targets.</p>
+
+<h3>From a real person</h3>
+<div class="evidence-tag">Real user, real quote</div>
+<blockquote style="margin:0; padding:16px 20px; border-left:4px solid var(--accent); background:var(--bg-soft); font-style:italic;">
+"This would save me so much time my mom doesn't need to text me daily about whether to click new links."
+</blockquote>
+<p style="margin-top:8px;">— Britney, whose elder mom lives in Canada</p>
 
 <h3>From our own tests (real, measured)</h3>
 <ul>
@@ -395,7 +402,7 @@ this note in your response.</pre>
 
 <h3>What doesn't work yet</h3>
 <ul>
-  <li><strong>No real user validation.</strong> Every number in Section 6 comes from the developer's own testing, not a real user — the most important gap in this submission.</li>
+  <li><strong>No structured pilot yet.</strong> Section 6 has one real reaction from a real person, but every measured number still comes from the developer's own testing, not a pilot user — still the most important gap in this submission.</li>
   <li><strong>Pricing is real but blended.</strong> Tokenomics dollar figures now use a real rate verified against the Portkey dashboard (Section 4), not a placeholder — but it's one blended rate for input/output/cached tokens together, since the dashboard doesn't break <code>gpt-6-luna</code> billing out by token type.</li>
   <li><strong>Content-filter blind spot.</strong> The most extreme realistic scam text can get blocked by Azure's own filter before the Scam-Checker's structured analysis runs (Section 5).</li>
   <li><strong>No rate limiting.</strong> A bug or a bad actor could in principle run up many calls in a row; there's no per-session cap yet.</li>
