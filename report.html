@@ -106,7 +106,7 @@
 
 <p><strong>How they handle it today.</strong> A patchwork, mostly: generic content sites (NerdWallet, Investopedia) that explain terms but don't know anything about the reader's situation; budgeting apps (Mint-style trackers, bank apps) that show where money went but don't teach anything; a bank "financial wellness" rep whose job is partly to sell product; a phone call to an adult child who may not know the answer either; or simply avoiding the topic because looking uninformed feels embarrassing. When a suspicious call or text arrives, the default response is usually to ask no one, verify nothing, and either hang up uneasily or — worse — comply under pressure.</p>
 
-<p><strong>What that costs.</strong> In money: the FTC's Consumer Sentinel Network has reported billions of dollars a year in fraud losses from adults 60+, consistently one of the largest-loss age groups per report, even though they are not the most frequent targets by report count. In time: generic research across scattered sites to answer one question ("should I wait to take Social Security?") easily takes 20–40 minutes of credibility-checking before getting a plain answer. In frustration: jargon-heavy explanations assume the reader is not intimidated, which — anecdotally and by the content's own framing in most of these sources — is exactly the group FINtellect is written for.</p>
+<p><strong>What that costs.</strong> In money: the <a href="https://www.ftc.gov/news-events/news/press-releases/2025/12/ftc-issues-annual-report-congress-agencys-actions-protect-older-adults" target="_blank">FTC's Consumer Sentinel Network</a> has reported billions of dollars a year in fraud losses from adults 60+, consistently one of the largest-loss age groups per report, even though they are not the most frequent targets by report count. In time: generic research across scattered sites to answer one question ("should I wait to take Social Security?") easily takes 20–40 minutes of credibility-checking before getting a plain answer. In frustration: jargon-heavy explanations assume the reader is not intimidated, which — anecdotally and by the content's own framing in most of these sources — is exactly the group FINtellect is written for.</p>
 
 <!-- ============ WHAT IS NEW ============ -->
 <h2 id="whats-new">2. What is new</h2>
@@ -283,24 +283,24 @@ this note in your response.</pre>
   <figcaption>Fig. 3 — Family-Bridge Agent output: a calm, first-person message ("Hi Sarah, I received a message claiming to be from my bank's fraud department...") ready for a "Text Sarah Johnson" button that opens the user's own messaging app — never auto-sent.</figcaption>
 </figure>
 
-<p>Total cost of this three-step, two-agent run: about $0.0002 (see Section 4 for the real measured numbers behind that estimate).</p>
+<p>Total cost of this three-step, two-agent run, from the actual logged tokens for these two calls: about $0.0004 (see Section 4 for the real measured numbers behind that estimate).</p>
 
 <!-- ============ TOKENOMICS ============ -->
 <h2 id="tokenomics">4. Tokenomics</h2>
 
 <div class="evidence-tag">Real measured data</div>
-<p>Every call to <code>agents/client.py</code>'s shared <code>chat()</code> function logs its real prompt/cached/completion/total tokens and an estimated cost to <code>logs/usage_log.csv</code> (git-ignored, since it can contain pasted scam text). The table below is computed directly from that log — <strong>41 real calls</strong> made during development and testing, not estimates.</p>
+<p>Every call to <code>agents/client.py</code>'s shared <code>chat()</code> function logs its real prompt/cached/completion/total tokens and an estimated cost to <code>logs/usage_log.csv</code> (git-ignored, since it can contain pasted scam text). The table below is computed directly from that log — <strong>45 real calls</strong> made during development and testing, not estimates (2 additional calls specifically instrumented for the word-cap A/B test later in this section are counted there instead, not here).</p>
 
 <table>
   <tr><th>Agent call (label)</th><th>n</th><th>Avg prompt tokens</th><th>Avg completion tokens</th><th>Avg total tokens</th><th>Avg cost / call</th></tr>
-  <tr><td><code>tutor.explain_topic</code></td><td>10</td><td>218</td><td>127</td><td>345</td><td>$0.000121</td></tr>
+  <tr><td><code>tutor.explain_topic</code></td><td>11</td><td>220</td><td>126</td><td>347</td><td>$0.000122</td></tr>
   <tr><td><code>tutor.explain_misconception</code></td><td>3</td><td>249</td><td>233</td><td>482</td><td>$0.000170</td></tr>
   <tr><td><code>tutor.answer_faq</code></td><td>11</td><td>341</td><td>307</td><td>648</td><td>$0.000228</td></tr>
   <tr><td><code>tutor.explain_kids_investing</code></td><td>1</td><td>474</td><td>327</td><td>801</td><td>$0.000282</td></tr>
-  <tr><td><code>scam_checker.analyze</code></td><td>3</td><td>287</td><td>162</td><td>449</td><td>$0.000158</td></tr>
-  <tr><td><code>family_bridge.summarize_for_family</code></td><td>3</td><td>212</td><td>35</td><td>247</td><td>$0.000087</td></tr>
-  <tr><td><code>chat.ask</code></td><td>10</td><td>529</td><td>344</td><td>873</td><td>$0.000307</td></tr>
-  <tr><td><strong>Blended average (all 41 calls)</strong></td><td>41</td><td>340</td><td>237</td><td>577</td><td><strong>$0.000203</strong></td></tr>
+  <tr><td><code>scam_checker.analyze</code></td><td>4</td><td>309</td><td>184</td><td>493</td><td>$0.000173</td></tr>
+  <tr><td><code>family_bridge.summarize_for_family</code></td><td>4</td><td>240</td><td>65</td><td>305</td><td>$0.000107</td></tr>
+  <tr><td><code>chat.ask</code></td><td>11</td><td>532</td><td>356</td><td>888</td><td>$0.000313</td></tr>
+  <tr><td><strong>Blended average (all 45 calls)</strong></td><td>45</td><td>344</td><td>237</td><td>581</td><td><strong>$0.000205</strong></td></tr>
 </table>
 
 <div class="evidence-tag">Real billed cost, Portkey dashboard</div>
@@ -316,7 +316,7 @@ this note in your response.</pre>
   <tr><td>10,000 users</td><td>~240,000 calls</td><td>~$49</td></tr>
 </table>
 
-<p>The real rate came in about 15% higher than the earlier placeholder guess happened to be ($0.000352/1K vs. an implied ~$0.000334/1K blended) — close enough that nothing about the app's cost profile changes: it is cheap to run because every prompt is capped (explicit "under 200 words" instructions bound completion tokens) and most calls are one-shot, not long multi-turn chains.</p>
+<p>The real rate came in about 5% higher than the earlier placeholder guess happened to be ($0.000352/1K vs. an implied ~$0.000334/1K blended) — close enough that nothing about the app's cost profile changes: it is cheap to run because every prompt is capped (explicit "under 200 words" instructions bound completion tokens) and most calls are one-shot, not long multi-turn chains.</p>
 
 <h3>Cost-cutting steps taken, and whether they hurt anything</h3>
 <ul>
@@ -385,7 +385,7 @@ this note in your response.</pre>
 </ul>
 
 <h3>From public data</h3>
-<p>The FTC's most recent report to Congress found that adults 60 and older reported <strong>$2.4 billion in fraud losses in 2024</strong> — up from about $600 million in 2020 — with investment scams the single largest source of those losses, and many victims saying they were first contacted on social media. That is the scale of the problem the Scam-Checker and Family-Bridge Agent are aimed at — not a claim that FINtellect has measured its own dent in that number yet.</p>
+<p>The FTC's <a href="https://www.ftc.gov/news-events/news/press-releases/2025/12/ftc-issues-annual-report-congress-agencys-actions-protect-older-adults" target="_blank">most recent report to Congress</a> found that adults 60 and older reported <strong>$2.4 billion in fraud losses in 2024</strong> — up from about $600 million in 2020 — with investment scams the single largest source of those losses, and many victims saying they were first contacted on social media. That is the scale of the problem the Scam-Checker and Family-Bridge Agent are aimed at — not a claim that FINtellect has measured its own dent in that number yet.</p>
 
 <h3>From personal experience</h3>
 <p>This project isn't abstract to me. My parents' lack of financial literacy trickled down: I'm playing catch-up on savings and investing basics that I never got a chance to absorb growing up, and I've had to work through a scarcity mindset rooted in fear and unfamiliarity with money rather than an actual lack of options. That gap — not knowing what you don't know, and feeling too behind to ask — is exactly the gap FINtellect is built to close, for the next generation of someone like my parents, or for someone like me.</p>
@@ -417,7 +417,7 @@ this note in your response.</pre>
   <li><strong>A real sign-up flow</strong>, replacing today's single shared, fictional demo profile with actual user accounts — the natural next step once there's a real account and real data worth signing in to protect. Passwords would be properly hashed and salted (e.g., bcrypt or argon2) and never stored or transmitted in plain text, consistent with harness.md's existing "never ask for or store sensitive identifiers" principle.</li>
 </ul>
 
-<p style="margin-top:60px; color:var(--muted); font-size:0.85rem;">Prepared for MGT 409, Yale School of Management. All dollar and token figures in Sections 3–6 are either directly measured from <code>logs/usage_log.csv</code> or taken from live tests run while preparing this report, as noted inline.</p>
+<p style="margin-top:60px; color:var(--muted); font-size:0.85rem;">Prepared for MGT 409, Yale School of Management. Dollar and token figures in Sections 3–6 are directly measured from <code>logs/usage_log.csv</code>, taken from live tests run while preparing this report, or (Section 6's fraud-loss figure) cited to a public FTC source — each noted inline.</p>
 
 </body>
 </html>
