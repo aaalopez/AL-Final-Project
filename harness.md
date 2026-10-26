@@ -52,4 +52,4 @@ These extend beyond what's been explicitly built so far — some are already tru
 
 - The provider's own content filter (sitting behind `gpt-6-luna`/Portkey) sometimes blocks the most extreme, realistic scam text (e.g. an explicit threat-plus-gift-cards message) rather than letting the Scam-Checker analyze it — the app degrades gracefully, but this means a real-world user pasting the most alarming scams may get the generic fallback instead of a detailed analysis.
 - There's no rate limiting or per-session cost cap yet — a user (or a bug) could in principle run up many calls in a row. Worth adding if the app is ever hosted for public use.
-- Cost estimates in `data/pricing.py` use placeholder per-token rates, not the real Portkey-billed rate for `gpt-6-luna`.
+- Cost estimates in `data/pricing.py` now use a real rate derived from two actual Portkey-billed calls (checked 2026-10-26), not a placeholder. It's a single blended rate ($0.000352/1K tokens) rather than separate input/output/cached rates, since the Portkey dashboard doesn't break billing out that way for `gpt-6-luna` — a reasonable approximation, not an exact per-token-type rate.

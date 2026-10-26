@@ -26,7 +26,7 @@ Both the Tutor Agent (Common Questions) and Chat Agent cite sources using a shar
 
 ## Token/cost logging
 
-Every model call is logged (not shown in the app UI) to `logs/usage_log.csv`: timestamp, which agent/function made the call, prompt/cached/completion/total tokens, and an estimated cost. This file is gitignored since it can contain pasted scam text. Use it to pull real, measured numbers for the report's Tokenomics section. Cost estimates use placeholder per-token rates in `data/pricing.py` — update those with the actual Portkey-billed rate before finalizing the report.
+Every model call is logged (not shown in the app UI) to `logs/usage_log.csv`: timestamp, which agent/function made the call, prompt/cached/completion/total tokens, and an estimated cost. This file is gitignored since it can contain pasted scam text. Use it to pull real, measured numbers for the report's Tokenomics section. Cost estimates in `data/pricing.py` use a real blended rate ($0.000352/1K tokens) derived from two actual Portkey-billed calls, not a placeholder — see the docstring in that file for how it was derived.
 
 ## Setup
 

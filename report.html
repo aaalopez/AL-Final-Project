@@ -282,29 +282,30 @@ this note in your response.</pre>
 
 <table>
   <tr><th>Agent call (label)</th><th>n</th><th>Avg prompt tokens</th><th>Avg completion tokens</th><th>Avg total tokens</th><th>Avg cost / call</th></tr>
-  <tr><td><code>tutor.explain_topic</code></td><td>10</td><td>218</td><td>127</td><td>345</td><td>$0.000109</td></tr>
-  <tr><td><code>tutor.explain_misconception</code></td><td>3</td><td>249</td><td>233</td><td>482</td><td>$0.000177</td></tr>
-  <tr><td><code>tutor.answer_faq</code></td><td>11</td><td>341</td><td>307</td><td>648</td><td>$0.000236</td></tr>
-  <tr><td><code>tutor.explain_kids_investing</code></td><td>1</td><td>474</td><td>327</td><td>801</td><td>$0.000267</td></tr>
-  <tr><td><code>scam_checker.analyze</code></td><td>3</td><td>287</td><td>162</td><td>449</td><td>$0.000141</td></tr>
-  <tr><td><code>family_bridge.summarize_for_family</code></td><td>3</td><td>212</td><td>35</td><td>247</td><td>$0.000053</td></tr>
-  <tr><td><code>chat.ask</code></td><td>10</td><td>529</td><td>344</td><td>873</td><td>$0.000286</td></tr>
-  <tr><td><strong>Blended average (all 41 calls)</strong></td><td>41</td><td>340</td><td>237</td><td>577</td><td><strong>$0.000193</strong></td></tr>
+  <tr><td><code>tutor.explain_topic</code></td><td>10</td><td>218</td><td>127</td><td>345</td><td>$0.000121</td></tr>
+  <tr><td><code>tutor.explain_misconception</code></td><td>3</td><td>249</td><td>233</td><td>482</td><td>$0.000170</td></tr>
+  <tr><td><code>tutor.answer_faq</code></td><td>11</td><td>341</td><td>307</td><td>648</td><td>$0.000228</td></tr>
+  <tr><td><code>tutor.explain_kids_investing</code></td><td>1</td><td>474</td><td>327</td><td>801</td><td>$0.000282</td></tr>
+  <tr><td><code>scam_checker.analyze</code></td><td>3</td><td>287</td><td>162</td><td>449</td><td>$0.000158</td></tr>
+  <tr><td><code>family_bridge.summarize_for_family</code></td><td>3</td><td>212</td><td>35</td><td>247</td><td>$0.000087</td></tr>
+  <tr><td><code>chat.ask</code></td><td>10</td><td>529</td><td>344</td><td>873</td><td>$0.000307</td></tr>
+  <tr><td><strong>Blended average (all 41 calls)</strong></td><td>41</td><td>340</td><td>237</td><td>577</td><td><strong>$0.000203</strong></td></tr>
 </table>
 
-<p><em>Note on the dollar figures:</em> the token counts above are real and measured. The per-token <em>price</em> used to turn them into dollars is a documented placeholder (<code>data/pricing.py</code>, roughly GPT-4o-mini-level: $0.00015/1K input, $0.0006/1K output) because <code>gpt-6-luna</code>'s real Portkey-billed rate is not published to students. This is flagged in the code itself and in <code>harness.md</code>'s known gaps — the dollar figures below should be read as "tokens are real, price-per-token is a stand-in," and would need the real Portkey dashboard rate swapped in before being treated as a production cost estimate.</p>
+<div class="evidence-tag">Real billed cost, Portkey dashboard</div>
+<p>The token counts above were always real (measured, from <code>logs/usage_log.csv</code>). The dollar figures now are too: the Portkey dashboard's actual billed cost was checked against two real calls — a 352-token call for $0.0001 (an exact match to the A/B-test "capped" call below) and a ~1,300-token call for $0.0005 (closely matching a 1,355-token <code>chat.ask</code> call in the log). <code>gpt-6-luna</code>'s billing isn't broken out by input vs. output on the dashboard, so these two points give a token-weighted blended rate of <strong>$0.000352 per 1K tokens</strong>, now baked into <code>data/pricing.py</code> in place of the earlier GPT-4o-mini-level guess — this replaced a documented placeholder, it isn't an estimate on top of one.</p>
 
 <h3>Cost per run, per user per month, and at scale</h3>
-<p>A typical session that touches three agent calls (one 101/FAQ explanation, one scam check, one chat question) costs roughly <strong>$0.0005–0.0007</strong> at the placeholder rate. Assuming a modest 8 sessions/user/month (an older adult checking a question or a suspicious message roughly twice a week):</p>
+<p>A typical session that touches three agent calls (one 101/FAQ explanation, one scam check, one chat question) costs roughly <strong>$0.0006</strong> at the real rate above. Assuming a modest 8 sessions/user/month (an older adult checking a question or a suspicious message roughly twice a week):</p>
 
 <table>
-  <tr><th>Scale</th><th>Calls/month</th><th>Estimated monthly cost (placeholder rate)</th></tr>
+  <tr><th>Scale</th><th>Calls/month</th><th>Estimated monthly cost (real rate)</th></tr>
   <tr><td>1 user</td><td>~24 calls</td><td>~$0.005</td></tr>
-  <tr><td>100 users</td><td>~2,400 calls</td><td>~$0.46</td></tr>
-  <tr><td>10,000 users</td><td>~240,000 calls</td><td>~$46</td></tr>
+  <tr><td>100 users</td><td>~2,400 calls</td><td>~$0.49</td></tr>
+  <tr><td>10,000 users</td><td>~240,000 calls</td><td>~$49</td></tr>
 </table>
 
-<p>Even if the real Portkey rate turns out to be 10–20x the placeholder (plausible for a frontier-adjacent model vs. a mini-tier estimate), 10,000 users would still land under $1,000/month — the app is cheap to run because every prompt is capped (explicit "under 200 words" instructions bound completion tokens) and most calls are one-shot, not long multi-turn chains.</p>
+<p>The real rate came in about 15% higher than the earlier placeholder guess happened to be ($0.000352/1K vs. an implied ~$0.000334/1K blended) — close enough that nothing about the app's cost profile changes: it is cheap to run because every prompt is capped (explicit "under 200 words" instructions bound completion tokens) and most calls are one-shot, not long multi-turn chains.</p>
 
 <h3>Cost-cutting steps taken, and whether they hurt anything</h3>
 <ul>
@@ -314,11 +315,11 @@ this note in your response.</pre>
   <div class="evidence-tag">Live A/B test, this session</div>
   <p class="small" style="margin:0 0 8px;">Asked the Tutor Agent to explain "Roth IRA" twice: once with the production word cap, once with no length limit at all, same model, same system prompt.</p>
   <table style="font-size:0.9em; margin:0 0 8px;">
-    <tr><th></th><th>Words</th><th>Completion tokens</th><th>Est. cost</th></tr>
-    <tr><td><strong>Capped (production)</strong></td><td>89</td><td>108</td><td>$0.0001</td></tr>
-    <tr><td><strong>Uncapped</strong></td><td>586</td><td>1,015</td><td>$0.0006</td></tr>
+    <tr><th></th><th>Words</th><th>Completion tokens</th><th>Cost</th></tr>
+    <tr><td><strong>Capped (production)</strong></td><td>89</td><td>108</td><td>$0.0001 <span class="small">(real, verified on the Portkey dashboard)</span></td></tr>
+    <tr><td><strong>Uncapped</strong></td><td>586</td><td>1,015</td><td>$0.0004 <span class="small">(at the real $0.000352/1K rate above)</span></td></tr>
   </table>
-  <p class="small" style="margin:0;">The uncapped version is ~6.6x longer and ~6x more expensive — and it is not just padding. It added several concrete, actionable facts the capped version left out entirely: the 59½-age-and-5-year "qualified withdrawal" rule, the annual contribution limit (shared with a traditional IRA) and catch-up contributions for 50+, the earned-income eligibility requirement, the ability to withdraw your own contributions anytime penalty-free, and the fact that Roth IRAs have no required withdrawals during the owner's lifetime. So yes — <strong>this cost cut measurably reduces completeness</strong>, not just length. The trade we made deliberately: the capped 101/FAQ answers stay a quick, skimmable first explanation, and anyone who wants the deeper detail can follow up in "Ask a Question" (the Chat Agent has no hard word cap). Full transcripts of both responses are in <code>.report_assets/ab_test_capped.txt</code> and <code>.report_assets/ab_test_uncapped.txt</code> in the repo.</p>
+  <p class="small" style="margin:0;">The uncapped version is ~6.6x longer and ~4x more expensive — and it is not just padding. It added several concrete, actionable facts the capped version left out entirely: the 59½-age-and-5-year "qualified withdrawal" rule, the annual contribution limit (shared with a traditional IRA) and catch-up contributions for 50+, the earned-income eligibility requirement, the ability to withdraw your own contributions anytime penalty-free, and the fact that Roth IRAs have no required withdrawals during the owner's lifetime. So yes — <strong>this cost cut measurably reduces completeness</strong>, not just length. The trade we made deliberately: the capped 101/FAQ answers stay a quick, skimmable first explanation, and anyone who wants the deeper detail can follow up in "Ask a Question" (the Chat Agent has no hard word cap). Full transcripts of both responses are in <code>.report_assets/ab_test_capped.txt</code> and <code>.report_assets/ab_test_uncapped.txt</code> in the repo.</p>
   </div>
   </li>
   <li><strong>Guard clauses against accidental calls.</strong> While building the 101s page, <code>logs/usage_log.csv</code> caught a real bug: a Tutor Agent call firing automatically on every page load, before any user click (<code>prevent_initial_call=True</code> alone wasn't sufficient in this Dash version). Fixed with an explicit <code>if not n_clicks: raise PreventUpdate</code> guard on every agent-calling callback — now required by convention for any new one. This is a correctness fix as much as a cost one; left unfixed, it would silently multiply real cost at scale with zero user benefit.</li>
@@ -384,7 +385,7 @@ this note in your response.</pre>
 <h3>What doesn't work yet</h3>
 <ul>
   <li><strong>No real user validation.</strong> Every number in Section 6 comes from the developer's own testing, not a real user — the most important gap in this submission.</li>
-  <li><strong>Placeholder pricing.</strong> Tokenomics dollar figures use a documented stand-in rate, not <code>gpt-6-luna</code>'s real Portkey-billed cost.</li>
+  <li><strong>Pricing is real but blended.</strong> Tokenomics dollar figures now use a real rate verified against the Portkey dashboard (Section 4), not a placeholder — but it's one blended rate for input/output/cached tokens together, since the dashboard doesn't break <code>gpt-6-luna</code> billing out by token type.</li>
   <li><strong>Content-filter blind spot.</strong> The most extreme realistic scam text can get blocked by Azure's own filter before the Scam-Checker's structured analysis runs (Section 5).</li>
   <li><strong>No rate limiting.</strong> A bug or a bad actor could in principle run up many calls in a row; there's no per-session cap yet.</li>
   <li><strong>Simplified retirement-target math.</strong> The Profile page's "illustrative savings target" uses a flat 3%/year raise assumption, an 80% income-replacement rule, and the standard 25x/4%-withdrawal rule — it does not account for Social Security, pensions, or inflation, and says so in its own disclaimer text.</li>
@@ -394,7 +395,7 @@ this note in your response.</pre>
 <h3>What we'd build next</h3>
 <ul>
   <li><strong>A small real pilot</strong> — even 5–10 people (a mix of older adults and "sandwich generation" adults) trying the Scam-Checker and 101s for a week, with a short before/after survey on confidence and one timed task — would convert Section 6 from "plausible estimate" to real evidence.</li>
-  <li><strong>Real Portkey billing numbers</strong> swapped into <code>data/pricing.py</code> once available, to replace the placeholder rate.</li>
+  <li><strong>A true input/output/cached rate split</strong> if Portkey or course staff can provide one, to replace the single blended rate now in <code>data/pricing.py</code> with per-token-type precision.</li>
   <li><strong>A per-session or per-day call cap</strong>, closing the rate-limiting gap ahead of any public hosting.</li>
   <li><strong>Optional lightweight accounts</strong> so a real (not fictional) profile and chat history could persist across visits, for users who want that — kept strictly opt-in given how deliberately the current version avoids collecting anything sensitive.</li>
 </ul>
