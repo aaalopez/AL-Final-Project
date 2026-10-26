@@ -1,0 +1,16 @@
+{
+  "capped": {
+    "prompt_tokens": 244,
+    "completion_tokens": 108,
+    "total_tokens": 352,
+    "cached_tokens": 0
+  },
+  "uncapped": {
+    "prompt_tokens": 244,
+    "completion_tokens": 1015,
+    "total_tokens": 1259,
+    "cached_tokens": 0
+  },
+  "capped_words": 89,
+  "uncapped_words": 586
+}

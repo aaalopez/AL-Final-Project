@@ -309,7 +309,18 @@ this note in your response.</pre>
 <h3>Cost-cutting steps taken, and whether they hurt anything</h3>
 <ul>
   <li><strong>In-memory caching</strong> in <code>tutor_agent.py</code> (keyed by topic/misconception/FAQ/kids-investing slug): a repeat click on the same 101 topic costs zero additional tokens. No downside — the explanation for a fixed topic doesn't need to vary between visits.</li>
-  <li><strong>Explicit word caps</strong> in every prompt ("under 200 words," "under 180 words," "under 120 words" for the family message) bound completion tokens directly. This was a deliberate design choice, not just a cost cut: short, skimmable answers are an explicit accessibility goal for an audience that may find long AI output overwhelming — the cap helps UX rather than hurting it.</li>
+  <li><strong>Explicit word caps</strong> in every prompt ("under 200 words," "under 180 words," "under 120 words" for the family message) bound completion tokens directly — and this one <em>does</em> trade off something real, tested directly rather than assumed:
+  <div class="callout" style="margin-top:10px;">
+  <div class="evidence-tag">Live A/B test, this session</div>
+  <p class="small" style="margin:0 0 8px;">Asked the Tutor Agent to explain "Roth IRA" twice: once with the production word cap, once with no length limit at all, same model, same system prompt.</p>
+  <table style="font-size:0.9em; margin:0 0 8px;">
+    <tr><th></th><th>Words</th><th>Completion tokens</th><th>Est. cost</th></tr>
+    <tr><td><strong>Capped (production)</strong></td><td>89</td><td>108</td><td>$0.0001</td></tr>
+    <tr><td><strong>Uncapped</strong></td><td>586</td><td>1,015</td><td>$0.0006</td></tr>
+  </table>
+  <p class="small" style="margin:0;">The uncapped version is ~6.6x longer and ~6x more expensive — and it is not just padding. It added several concrete, actionable facts the capped version left out entirely: the 59½-age-and-5-year "qualified withdrawal" rule, the annual contribution limit (shared with a traditional IRA) and catch-up contributions for 50+, the earned-income eligibility requirement, the ability to withdraw your own contributions anytime penalty-free, and the fact that Roth IRAs have no required withdrawals during the owner's lifetime. So yes — <strong>this cost cut measurably reduces completeness</strong>, not just length. The trade we made deliberately: the capped 101/FAQ answers stay a quick, skimmable first explanation, and anyone who wants the deeper detail can follow up in "Ask a Question" (the Chat Agent has no hard word cap). Full transcripts of both responses are in <code>.report_assets/ab_test_capped.txt</code> and <code>.report_assets/ab_test_uncapped.txt</code> in the repo.</p>
+  </div>
+  </li>
   <li><strong>Guard clauses against accidental calls.</strong> While building the 101s page, <code>logs/usage_log.csv</code> caught a real bug: a Tutor Agent call firing automatically on every page load, before any user click (<code>prevent_initial_call=True</code> alone wasn't sufficient in this Dash version). Fixed with an explicit <code>if not n_clicks: raise PreventUpdate</code> guard on every agent-calling callback — now required by convention for any new one. This is a correctness fix as much as a cost one; left unfixed, it would silently multiply real cost at scale with zero user benefit.</li>
   <li><strong>Shared citation whitelist</strong> instead of a second "verify this URL" model call: restricting citations to seven known-valid homepages fixes the hallucinated-URL problem (Section 5) without needing an extra round-trip to check a generated link.</li>
 </ul>
