@@ -61,11 +61,22 @@
   .diagram-wrap { background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 10px; margin: 20px 0; }
   .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
   @media print {
-    body { font-size: 12.5pt; max-width: none; padding: 0 0.4in; }
-    h2 { page-break-before: always; border-top: none; padding-top: 0; }
-    h1 + .subtitle, .meta-links, h2:first-of-type { page-break-before: avoid; }
+    body { font-size: 11pt; max-width: none; padding: 0 0.3in; line-height: 1.35; }
+    p { margin: 0 0 9px; }
+    h2 { margin-top: 22px; padding-top: 0; border-top: 2px solid var(--accent); page-break-before: auto; page-break-after: avoid; }
+    h3 { margin-top: 16px; page-break-after: avoid; }
+    h1 + .subtitle, .meta-links { page-break-before: avoid; }
     a { color: var(--ink); text-decoration: none; }
-    figure { page-break-inside: avoid; }
+    figure { page-break-inside: avoid; margin: 10px 0; }
+    figure img { max-width: 62%; max-height: 3.2in; margin: 0 auto; }
+    figcaption { font-size: 0.78rem; }
+    .diagram-wrap { max-width: 85%; margin: 10px auto; padding: 4px; }
+    .diagram-wrap svg { max-height: 3.6in; width: auto; display: block; margin: 0 auto; }
+    table { font-size: 0.82rem; margin: 10px 0; }
+    th, td { padding: 4px 7px; }
+    li { margin-bottom: 3px; }
+    .callout { padding: 8px 12px; margin: 10px 0; }
+    ul, ol { margin: 6px 0; }
   }
 </style>
 </head>
